@@ -2,47 +2,48 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login – Clash Liga</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+<body class="bg-gray-900 text-white font-sans">
+  <header class="bg-gray-800 p-4 shadow-md">
+    <nav class="flex justify-between items-center max-w-6xl mx-auto">
+      <h1 class="text-2xl font-bold text-yellow-400">🏆 Admin Login</h1>
+    </nav>
+  </header>
 
-  <div class="bg-gray-800 p-8 rounded shadow-md w-full max-w-sm">
-    <h1 class="text-2xl font-bold mb-6 text-yellow-400 text-center">🔒 Admin Login</h1>
-    
-    <form id="loginForm" class="space-y-4">
-      <div>
-        <label for="username" class="block mb-1">Benutzername</label>
-        <input type="text" id="username" required class="w-full p-2 rounded bg-gray-700 text-white">
+  <main class="max-w-sm mx-auto p-6 mt-10 bg-gray-800 rounded shadow-md">
+    <form id="loginForm">
+      <div class="mb-4">
+        <label for="username" class="block text-sm font-medium text-gray-300">Benutzername</label>
+        <input type="text" id="username" required class="w-full p-2 rounded bg-gray-700 text-white" />
       </div>
-      <div>
-        <label for="password" class="block mb-1">Passwort</label>
-        <input type="password" id="password" required class="w-full p-2 rounded bg-gray-700 text-white">
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-gray-300">Passwort</label>
+        <input type="password" id="password" required class="w-full p-2 rounded bg-gray-700 text-white" />
       </div>
-      <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black py-2 rounded">Login</button>
+      <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black p-2 rounded">Anmelden</button>
     </form>
-    <p id="error" class="text-red-400 mt-4 hidden">❌ Falscher Benutzername oder Passwort</p>
-  </div>
+  </main>
 
   <script>
-    const form = document.getElementById("loginForm");
-    const errorText = document.getElementById("error");
-
-    form.addEventListener("submit", function (e) {
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
+      // Benutzername und Passwort prüfen
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      // Hier kannst du deinen gewünschten Login festlegen
-      if (username === "123" && password === "123") {
+      if (username === "admin" && password === "password") {
+        // Login erfolgreich, Admin-Rechte setzen
         localStorage.setItem("admin", "true");
-        window.location.href = "verwaltung.html"; // Weiterleitung zur Admin-Seite
+        // Weiterleitung zur Startseite (index.html)
+        window.location.href = "index.html"; 
       } else {
-        errorText.classList.remove("hidden");
+        alert("Falscher Benutzername oder Passwort");
       }
     });
   </script>
-
 </body>
 </html>
