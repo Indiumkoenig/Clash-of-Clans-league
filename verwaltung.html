@@ -1,0 +1,4 @@
+// Schutz: Weiterleitung wenn kein Login
+if (localStorage.getItem("admin") !== "true") {
+  window.location.href = "admin-login.html";
+}
