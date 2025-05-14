@@ -42,6 +42,16 @@
         <label class="block mb-1">Spieler (min. 5 Namen)</label>
         <textarea id="spieler" required class="w-full p-2 rounded bg-gray-700 text-white"></textarea>
       </div>
+      
+      <!-- Neues Eingabefeld für das Bild -->
+      <div>
+        <label class="block mb-1">Clan-Logo (optional)</label>
+        <input id="logo" type="file" accept="image/*" class="w-full p-2 rounded bg-gray-700 text-white" onchange="previewImage(event)" />
+      </div>
+      <div>
+        <img id="imagePreview" class="mt-4 hidden max-w-full rounded" alt="Logo Vorschau" />
+      </div>
+      
       <button type="submit" class="bg-yellow-500 hover:bg-yellow-400 text-black px-4 py-2 rounded">Absenden</button>
     </form>
   </main>
@@ -73,6 +83,7 @@
         tag: document.getElementById("tag").value,
         koordinator: document.getElementById("koord").value,
         spieler: document.getElementById("spieler").value,
+        logo: document.getElementById("logo").files[0] ? document.getElementById("logo").files[0].name : "", // Bildname speichern (oder leer lassen)
         punkte: 0,
         siege: 0,
         niederlagen: 0
@@ -81,8 +92,21 @@
       push(ref(db, "clans"), clan).then(() => {
         alert("Clan erfolgreich angemeldet!");
         form.reset();
+        document.getElementById("imagePreview").classList.add("hidden"); // Bildvorschau ausblenden
       });
     });
+
+    // Bildvorschau anzeigen
+    function previewImage(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imagePreview = document.getElementById("imagePreview");
+        imagePreview.src = e.target.result;
+        imagePreview.classList.remove("hidden");
+      };
+      reader.readAsDataURL(file);
+    }
   </script>
 </body>
 </html>
