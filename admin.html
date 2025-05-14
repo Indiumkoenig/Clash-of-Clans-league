@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Clan Verwaltung</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-6">
+  <h1 class="text-2xl font-bold mb-4">🔐 Admin Login</h1>
+
+  <div id="login" class="space-y-2 mb-6">
+    <input id="username" type="text" placeholder="Benutzername" class="p-2 rounded bg-gray-800 w-64" />
+    <input id="password" type="password" placeholder="Passwort" class="p-2 rounded bg-gray-800 w-64" />
+    <button onclick="login()" class="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400">Login</button>
+    <p id="loginError" class="text-red-500 hidden">Falsche Zugangsdaten!</p>
+  </div>
+
+  <div id="clanVerwaltung" class="hidden">
+    <h2 class="text-xl font-semibold mb-4">📋 Clan-Liste</h2>
+    <div id="clanListe" class="space-y-4"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDTt8O8cBsnNxsV2yy6TnQ7i-Y_PCq4hQM",
+      authDomain: "clash-league.firebaseapp.com",
+      databaseURL: "https://clash-league-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "clash-league",
+      storageBucket: "clash-league.appspot.com",
+      messagingSenderId: "661886458513",
+      appId: "1:661886458513:web:e95c47c787f2d78885fd30",
+      measurementId: "G-FK9TRTFMDE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const login = () => {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+
+      if (user === "admin" && pass === "1234") {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("clanVerwaltung").classList.remove("hidden");
+        ladeClans();
+      } else {
+        document.getElementById("loginError").classList.remove("hidden");
+      }
+    };
+
+    const ladeClans = () => {
+      const clansRef = ref(db, "clans");
+      onValue(clansRef, (snapshot) => {
+        const clanListe = document.getElementById("clanListe");
+        clanListe.innerHTML = "";
+
+        const data = snapshot.val();
+        for (const id in data) {
+          const clan = data[id];
+
+          clanListe.innerHTML += `
+            <div class="bg-gray-800 p-4 rounded">
+              <p><strong>Name:</strong> ${clan.name}</p>
+              <p><strong>Punkte:</strong> <input id="punkte-${id}" value="${clan.punkte}" class="bg-gray-700 p-1 rounded w-16 text-white" /></p>
+              <p><strong>Siege:</strong> <input id="siege-${id}" value="${clan.siege}" class="bg-gray-700 p-1 rounded w-16 text-white" /></p>
+              <p><strong>Niederlagen:</strong> <input id="niederlagen-${id}" value="${clan.niederlagen}" class="bg-gray-700 p-1 rounded w-16 text-white" /></p>
+              <button onclick="updateClan('${id}')" class="mt-2 bg-yellow-500 text-black px-4 py-1 rounded hover:bg-yellow-400">Aktualisieren</button>
+            </div>
+          `;
+        }
+      });
+    };
+
+    window.updateClan = (id) => {
+      const punkte = parseInt(document.getElementById(`punkte-${id}`).value);
+      const siege = parseInt(document.getElementById(`siege-${id}`).value);
+      const niederlagen = parseInt(document.getElementById(`niederlagen-${id}`).value);
+
+      const clanRef = ref(db, "clans/" + id);
+      update(clanRef, { punkte, siege, niederlagen }).then(() => {
+        alert("Clan aktualisiert!");
+      });
+    };
+  </script>
+</body>
+</html>
