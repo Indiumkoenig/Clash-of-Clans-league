@@ -2,50 +2,47 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin-Login – Clash Liga</title>
+  <title>Admin Login – Clash Liga</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+
   <div class="bg-gray-800 p-8 rounded shadow-md w-full max-w-sm">
-    <h1 class="text-2xl font-bold text-yellow-400 mb-6 text-center">🔐 Admin Login</h1>
+    <h1 class="text-2xl font-bold mb-6 text-yellow-400 text-center">🔒 Admin Login</h1>
+    
     <form id="loginForm" class="space-y-4">
       <div>
         <label for="username" class="block mb-1">Benutzername</label>
-        <input id="username" type="text" required class="w-full p-2 rounded bg-gray-700 text-white" />
+        <input type="text" id="username" required class="w-full p-2 rounded bg-gray-700 text-white">
       </div>
       <div>
         <label for="password" class="block mb-1">Passwort</label>
-        <input id="password" type="password" required class="w-full p-2 rounded bg-gray-700 text-white" />
+        <input type="password" id="password" required class="w-full p-2 rounded bg-gray-700 text-white">
       </div>
-      <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black px-4 py-2 rounded font-bold">
-        Login
-      </button>
-      <p id="error" class="text-red-400 mt-2 hidden">❌ Falscher Benutzername oder Passwort.</p>
+      <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black py-2 rounded">Login</button>
     </form>
+    <p id="error" class="text-red-400 mt-4 hidden">❌ Falscher Benutzername oder Passwort</p>
   </div>
 
   <script>
     const form = document.getElementById("loginForm");
     const errorText = document.getElementById("error");
 
-    // Beispiel-Daten – später kannst du echte Auth verwenden
-    const adminUsername = "Admin";
-    const adminPassword = "cOwtfS2nFHZd94HFVCLb"; // Ändere das!
-
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", function (e) {
       e.preventDefault();
+
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      if (username === adminUsername && password === adminPassword) {
-        // Speichere Login-Status und weiterleiten
+      // Hier kannst du deinen gewünschten Login festlegen
+      if (username === "admin" && password === "geheim123") {
         localStorage.setItem("admin", "true");
-        window.location.href = "verwaltung.html";
+        window.location.href = "verwaltung.html"; // Weiterleitung zur Admin-Seite
       } else {
         errorText.classList.remove("hidden");
       }
     });
   </script>
+
 </body>
 </html>
