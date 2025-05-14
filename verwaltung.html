@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clan-Verwaltung</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+</head>
+<body class="bg-gray-900 text-white p-6">
+  <h1 class="text-3xl font-bold text-yellow-400 mb-6">🛠️ Clan-Verwaltung</h1>
+  <div id="clanListe" class="space-y-6"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDTt8O8cBsnNxsV2yy6TnQ7i-Y_PCq4hQM",
+      authDomain: "clash-league.firebaseapp.com",
+      databaseURL: "https://clash-league-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "clash-league",
+      storageBucket: "clash-league.firebasestorage.app",
+      messagingSenderId: "661886458513",
+      appId: "1:661886458513:web:e95c47c787f2d78885fd30",
+      measurementId: "G-FK9TRTFMDE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const clanListe = document.getElementById("clanListe");
+
+    onValue(ref(db, "clans"), (snapshot) => {
+      clanListe.innerHTML = ""; // Liste leeren
+
+      snapshot.forEach((child) => {
+        const clan = child.val();
+        const key = child.key;
+
+        const div = document.createElement("div");
+        div.className = "bg-gray-800 p-4 rounded shadow space-y-2";
+
+        div.innerHTML = `
+          <h2 class="text-xl font-bold text-yellow-300">${clan.name} (${clan.tag})</h2>
+          <label class="block">Punkte: <input type="number" value="${clan.punkte}" class="punkte w-20 text-black rounded px-2"></label>
+          <label class="block">Siege: <input type="number" value="${clan.siege}" class="siege w-20 text-black rounded px-2"></label>
+          <label class="block">Niederlagen: <input type="number" value="${clan.niederlagen}" class="niederlagen w-20 text-black rounded px-2"></label>
+          <button class="speichern mt-2 px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400">Speichern</button>
+        `;
+
+        div.querySelector(".speichern").addEventListener("click", () => {
+          const neuePunkte = parseInt(div.querySelector(".punkte").value);
+          const neueSiege = parseInt(div.querySelector(".siege").value);
+          const neueNiederlagen = parseInt(div.querySelector(".niederlagen").value);
+
+          update(ref(db, "clans/" + key), {
+            punkte: neuePunkte,
+            siege: neueSiege,
+            niederlagen: neueNiederlagen,
+          }).then(() => {
+            alert(`Clan "${clan.name}" wurde aktualisiert!`);
+          });
+        });
+
+        clanListe.appendChild(div);
+      });
+    });
+  </script>
+</body>
+</html>
