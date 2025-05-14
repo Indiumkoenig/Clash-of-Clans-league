@@ -1,0 +1,77 @@
+<!-- liga.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ligatabelle – Clash Liga</title>
+  <script>
+    if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+</head>
+<body class="bg-[url('https://images.unsplash.com/photo-1602524812550-7cc3c7f55e13')] bg-fixed bg-cover dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <header class="bg-gray-800 bg-opacity-90 p-4 shadow-md">
+    <nav class="max-w-5xl mx-auto flex justify-between">
+      <h1 class="text-xl font-bold text-yellow-400">🏆 Clash Liga</h1>
+      <a href="index.html" class="hover:text-yellow-300">Zurück</a>
+    </nav>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6">
+    <h2 class="text-2xl font-bold mb-4">Aktuelle Ligatabelle</h2>
+    <table class="w-full text-left border-collapse">
+      <thead class="bg-gray-700">
+        <tr>
+          <th class="p-2">#</th>
+          <th class="p-2">Clan</th>
+          <th class="p-2">Punkte</th>
+          <th class="p-2">Siege</th>
+          <th class="p-2">Niederlagen</th>
+        </tr>
+      </thead>
+      <tbody id="ligaTabelle" class="bg-gray-800 hover:bg-gray-700">
+        <!-- Dynamische Clan-Daten hier -->
+      </tbody>
+    </table>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDTt8O8cBsnNxsV2yy6TnQ7i-Y_PCq4hQM",
+      authDomain: "clash-league.firebaseapp.com",
+      databaseURL: "https://clash-league-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "clash-league",
+      storageBucket: "clash-league.firebasestorage.app",
+      messagingSenderId: "661886458513",
+      appId: "1:661886458513:web:e95c47c787f2d78885fd30",
+      measurementId: "G-FK9TRTFMDE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const tabelleRef = ref(db, 'clans');
+    const tabelleBody = document.getElementById("ligaTabelle");
+
+    onValue(tabelleRef, (snapshot) => {
+      tabelleBody.innerHTML = "";
+      let index = 1;
+      snapshot.forEach(child => {
+        const clan = child.val();
+        const row = `<tr class='hover:bg-gray-700'><td class='p-2'>${index++}</td><td class='p-2'>${clan.name}</td><td class='p-2'>${clan.punkte || 0}</td><td class='p-2'>${clan.siege || 0}</td><td class='p-2'>${clan.niederlagen || 0}</td></tr>`;
+        tabelleBody.innerHTML += row;
+      });
+    });
+  </script>
+</body>
+</html>
